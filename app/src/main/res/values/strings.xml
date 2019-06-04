@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyTeam</string>
+
+    <string name="entry">#%1$s</string>
 </resources>
