@@ -1,7 +1,6 @@
 package nl.hva.myteam.features.presentation.pokedex
 
 import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +33,7 @@ class PokedexAdapter(private val clickListener: (Pokemon) -> Unit) :
     class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(pokemon: Pokemon, clickListener: (Pokemon) -> Unit) = with(view) {
-            val entry = Regex("""(?<!v)\d+""").find(pokemon.url)?.value
+            val entry = Pokemon.getEntry(pokemon)
             val ips = resources.openRawResource(
                 resources.getIdentifier(
                     "default_$entry",

@@ -1,9 +1,11 @@
 package nl.hva.myteam.features.data.repositories
 
+import nl.hva.myteam.core.interactor.UseCase
 import nl.hva.myteam.core.platform.BaseRepository
 import nl.hva.myteam.core.platform.NetworkHandler
 import nl.hva.myteam.features.data.datasource.Api
 import nl.hva.myteam.features.data.models.Pokemon
+import nl.hva.myteam.features.data.models.PokemonDetails
 import nl.hva.myteam.features.data.models.PokemonResponse
 
 class PokemonRepository(networkHandler: NetworkHandler, private val api: Api) :
@@ -16,6 +18,10 @@ class PokemonRepository(networkHandler: NetworkHandler, private val api: Api) :
             { it.results },
             PokemonResponse.empty()
         )
+    }
+
+    fun getPokemonDetails(name: String): PokemonDetails {
+        return request(api.getPokemonDetails(name), { it }, PokemonDetails.empty())
     }
 
 }

@@ -6,6 +6,8 @@ import nl.hva.myteam.core.platform.NetworkHandler
 import nl.hva.myteam.features.data.datasource.Api
 import nl.hva.myteam.features.data.repositories.PokemonRepository
 import nl.hva.myteam.features.domain.usecases.GetAllPokemonUseCase
+import nl.hva.myteam.features.domain.usecases.GetPokemonDetailsUseCase
+import nl.hva.myteam.features.presentation.detail.DetailViewModel
 import nl.hva.myteam.features.presentation.pokedex.PokedexViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,10 +35,12 @@ val repositoryModule = module {
 
 val useCaseModule = module {
     factory<GetAllPokemonUseCase>()
+    factory<GetPokemonDetailsUseCase>()
 }
 
 val viewModelModule = module {
     viewModel<PokedexViewModel>()
+    viewModel<DetailViewModel>()
 }
 
 val koinModules = listOf(

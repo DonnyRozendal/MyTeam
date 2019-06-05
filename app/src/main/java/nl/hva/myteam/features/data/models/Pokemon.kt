@@ -10,4 +10,12 @@ data class Pokemon(
     var name: String,
     @SerializedName("url")
     val url: String
-) : Parcelable
+) : Parcelable {
+
+    companion object {
+        fun getEntry(pokemon: Pokemon): String? {
+            return Regex("""(?<!v)\d+""").find(pokemon.url)?.value
+        }
+    }
+
+}
