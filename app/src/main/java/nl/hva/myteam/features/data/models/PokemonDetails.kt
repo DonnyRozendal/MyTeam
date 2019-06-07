@@ -10,7 +10,7 @@ class PokemonDetails(
     val id: String,
     @SerializedName("name")
     val name: String,
-    @SerializedName("baseExperience")
+    @SerializedName("base_experience")
     val baseExperience: String,
     @SerializedName("height")
     val height: String,
@@ -32,7 +32,7 @@ class PokemonDetails(
 class MoveVersion(
     @SerializedName("move")
     val move: MoveInfo,
-    @SerializedName("versionGroupDetails")
+    @SerializedName("version_group_details")
     val versionGroupDetails: List<MoveVersionGroupDetail>
 ) : Parcelable
 
@@ -46,11 +46,11 @@ class MoveInfo(
 
 @Parcelize
 class MoveVersionGroupDetail(
-    @SerializedName("levelLearnedAt")
+    @SerializedName("level_learned_at")
     val levelLearnedAt: String,
-    @SerializedName("moveLearnMethod")
+    @SerializedName("move_learn_method")
     val moveLearnMethod: MoveLearnMethod,
-    @SerializedName("versionGroup")
+    @SerializedName("version_group")
     val versionGroup: MoveVersionGroup
 ) : Parcelable
 

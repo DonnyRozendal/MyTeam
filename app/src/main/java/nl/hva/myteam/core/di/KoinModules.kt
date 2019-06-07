@@ -1,13 +1,15 @@
 package nl.hva.myteam.core.di
 
+import androidx.room.Room
 import nl.hva.myteam.BuildConfig
 import nl.hva.myteam.core.navigation.Navigator
 import nl.hva.myteam.core.platform.NetworkHandler
 import nl.hva.myteam.features.data.datasource.Api
 import nl.hva.myteam.features.data.repositories.PokemonRepository
-import nl.hva.myteam.features.domain.usecases.GetAllPokemonUseCase
-import nl.hva.myteam.features.domain.usecases.GetPokemonDetailsUseCase
+import nl.hva.myteam.features.data.room.PokemonDatabase
+import nl.hva.myteam.features.domain.usecases.*
 import nl.hva.myteam.features.presentation.detail.DetailViewModel
+import nl.hva.myteam.features.presentation.myteam.MyTeamViewModel
 import nl.hva.myteam.features.presentation.pokedex.PokedexViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,20 +35,31 @@ val repositoryModule = module {
     single<PokemonRepository>()
 }
 
+val roomModule = module {
+    single { Room.databaseBuilder(get(), PokemonDatabase::class.java, "team").build() }
+    single { get<PokemonDatabase>().pokemonDao() }
+}
+
 val useCaseModule = module {
     factory<GetAllPokemonUseCase>()
     factory<GetPokemonDetailsUseCase>()
+    factory<StorePokemonUseCase>()
+    factory<GetTeamUseCase>()
+    factory<UpdatePokemonUseCase>()
+    factory<DeletePokemonUseCase>()
 }
 
 val viewModelModule = module {
     viewModel<PokedexViewModel>()
     viewModel<DetailViewModel>()
+    viewModel<MyTeamViewModel>()
 }
 
 val koinModules = listOf(
     applicationModule,
     networkModule,
     repositoryModule,
+    roomModule,
     useCaseModule,
     viewModelModule
 )

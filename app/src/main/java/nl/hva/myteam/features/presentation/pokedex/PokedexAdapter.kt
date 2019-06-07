@@ -13,7 +13,7 @@ import nl.hva.myteam.features.data.models.Pokemon
 
 class PokedexAdapter(private val clickListener: (Pokemon) -> Unit) :
     ListAdapter<Pokemon, PokedexAdapter.ViewHolder>(
-        MovieDiffCallback()
+        PokedexDiffCallback()
     ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -53,7 +53,7 @@ class PokedexAdapter(private val clickListener: (Pokemon) -> Unit) :
 
     }
 
-    class MovieDiffCallback : DiffUtil.ItemCallback<Pokemon>() {
+    class PokedexDiffCallback : DiffUtil.ItemCallback<Pokemon>() {
         override fun areItemsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
             return oldItem.name == newItem.name
         }

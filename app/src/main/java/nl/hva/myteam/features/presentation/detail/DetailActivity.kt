@@ -3,9 +3,12 @@ package nl.hva.myteam.features.presentation.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_detail.*
 import nl.hva.myteam.R
+import nl.hva.myteam.core.exception.Failure
+import nl.hva.myteam.core.extension.failure
 import nl.hva.myteam.core.extension.observe
 import nl.hva.myteam.features.data.models.Pokemon
 import nl.hva.myteam.features.data.models.PokemonDetails
@@ -35,13 +38,20 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        setSupportActionBar(toolbar)
         supportActionBar?.title = pokemon.name.capitalize()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel.apply {
             observe(pokemonDetails, ::handlePokemonDetails)
+            observe(storedPokemon, ::handleStoredPokemon)
+            failure(failure, ::handleFailure)
         }
         viewModel.getPokemonDetails(pokemon.name.decapitalize())
+
+        iconAdd.setOnClickListener {
+            viewModel.storePokemon(pokemon)
+        }
     }
 
     private fun initTabLayout() {
@@ -51,11 +61,15 @@ class DetailActivity : AppCompatActivity() {
 
     private fun findMoves(pokemonDetails: PokemonDetails, learnType: LearnType): List<MoveRow> {
         val moveList = mutableListOf<MoveRow>()
-        pokemonDetails.moves.map { x -> x.versionGroupDetails.map { y -> y.apply {
-            if (moveLearnMethod.name == learnType.type && versionGroup.name == "sun-moon") {
-                moveList.add(MoveRow(levelLearnedAt, x.move))
+        pokemonDetails.moves.map { x ->
+            x.versionGroupDetails.map { y ->
+                y.apply {
+                    if (moveLearnMethod.name == learnType.type && versionGroup.name == "sun-moon") {
+                        moveList.add(MoveRow(null, levelLearnedAt, x.move, pokemon.id))
+                    }
+                }
             }
-        } } }
+        }
         return sortMoves(moveList)
     }
 
@@ -73,6 +87,30 @@ class DetailActivity : AppCompatActivity() {
         moveListLevelUp.addAll(findMoves(pokemonDetails, LearnType.LEVELUP))
         moveListMachine.addAll(findMoves(pokemonDetails, LearnType.MACHINE))
         initTabLayout()
+    }
+
+    private var oldId: Long = 0
+    private fun handleStoredPokemon(newId: Long) {
+        if (newId != oldId) {
+            Toast.makeText(this, getString(R.string.detail_success), Toast.LENGTH_SHORT).show()
+        }
+        oldId = newId
+    }
+
+    private fun handleFailure(throwable: Throwable) {
+        if (throwable is Failure.FullTeamError) {
+            Toast.makeText(this, getString(R.string.detail_error), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return super.onSupportNavigateUp()
     }
 
 }

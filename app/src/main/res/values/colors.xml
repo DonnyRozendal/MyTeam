@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="button_text">#FFFFFF</color>
+    <color name="pokedex_item_pressed">#dbdbdb</color>
 </resources>
