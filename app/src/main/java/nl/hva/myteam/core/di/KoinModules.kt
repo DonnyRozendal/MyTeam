@@ -41,12 +41,13 @@ val roomModule = module {
 }
 
 val useCaseModule = module {
+    factory<DeletePokemonUseCase>()
     factory<GetAllPokemonUseCase>()
     factory<GetPokemonDetailsUseCase>()
-    factory<StorePokemonUseCase>()
+    factory<GetTeamFromFirestoreUseCase>()
     factory<GetTeamUseCase>()
+    factory<StorePokemonUseCase>()
     factory<UpdatePokemonUseCase>()
-    factory<DeletePokemonUseCase>()
 }
 
 val viewModelModule = module {

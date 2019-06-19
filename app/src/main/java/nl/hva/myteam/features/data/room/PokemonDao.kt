@@ -7,6 +7,9 @@ import nl.hva.myteam.features.data.models.PokemonResponse
 @Dao
 interface PokemonDao {
 
+    @Query("DELETE FROM pokemonTable")
+    fun clearTable()
+
     @Delete
     fun delete(pokemon: Pokemon): Int
 

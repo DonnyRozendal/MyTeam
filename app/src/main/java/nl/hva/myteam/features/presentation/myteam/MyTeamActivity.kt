@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_my_team.*
 import kotlinx.android.synthetic.main.view_edit_nickname.view.*
 import nl.hva.myteam.R
+import nl.hva.myteam.core.exception.Failure
+import nl.hva.myteam.core.extension.failure
 import nl.hva.myteam.core.extension.observe
 import nl.hva.myteam.features.data.models.Pokemon
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,8 +34,10 @@ class MyTeamActivity : AppCompatActivity() {
 
         viewModel.apply {
             observe(team, ::handleTeam)
+            observe(teamFromFirestore, ::handleTeam)
             observe(pokemonUpdated, ::handlePokemonUpdatedOrDeleted)
             observe(pokemonDeleted, ::handlePokemonUpdatedOrDeleted)
+            failure(failure, ::handleFailure)
         }
         initViews()
     }
@@ -43,7 +47,7 @@ class MyTeamActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
-        viewModel.getTeam()
+        viewModel.getTeamFromFirestore()
     }
 
     private fun showEditDialog(pokemon: Pokemon, onPositiveClicked: (pokemon: Pokemon) -> Unit) {
@@ -87,9 +91,17 @@ class MyTeamActivity : AppCompatActivity() {
         }
     }
 
-    private fun handlePokemonUpdatedOrDeleted(rowsAffected: Int) {
-        if (rowsAffected >= 1) {
+    private fun handlePokemonUpdatedOrDeleted(updatedOrDeleted: Boolean) {
+        if (updatedOrDeleted) {
             viewModel.getTeam()
+        }
+    }
+
+    private fun handleFailure(throwable: Throwable) {
+        when (throwable) {
+            is Failure.NoTeamFoundOnFirestoreError -> {
+                viewModel.getTeam()
+            }
         }
     }
 

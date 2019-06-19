@@ -5,7 +5,7 @@ import nl.hva.myteam.features.data.models.Pokemon
 import nl.hva.myteam.features.data.repositories.PokemonRepository
 
 class UpdatePokemonUseCase(private val pokemonRepository: PokemonRepository) :
-    UseCase<Int, UpdatePokemonUseCase.Params>() {
+    UseCase<Boolean, UpdatePokemonUseCase.Params>() {
 
     override fun invoke(params: Params) = pokemonRepository.updatePokemon(params.pokemon)
 

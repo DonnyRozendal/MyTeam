@@ -13,7 +13,7 @@ class DetailViewModel(
 ) : BaseViewModel() {
 
     val pokemonDetails = MutableLiveData<PokemonDetails>()
-    val storedPokemon = MutableLiveData<Long>()
+    val storedPokemon = MutableLiveData<Boolean>()
 
     fun getPokemonDetails(name: String) {
         run {

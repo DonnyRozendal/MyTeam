@@ -89,17 +89,26 @@ class DetailActivity : AppCompatActivity() {
         initTabLayout()
     }
 
-    private var oldId: Long = 0
-    private fun handleStoredPokemon(newId: Long) {
-        if (newId != oldId) {
+    private fun handleStoredPokemon(stored: Boolean) {
+        if (stored) {
             Toast.makeText(this, getString(R.string.detail_success), Toast.LENGTH_SHORT).show()
         }
-        oldId = newId
     }
 
     private fun handleFailure(throwable: Throwable) {
-        if (throwable is Failure.FullTeamError) {
-            Toast.makeText(this, getString(R.string.detail_error), Toast.LENGTH_SHORT).show()
+        when (throwable) {
+            is Failure.FullTeamError -> {
+                Toast.makeText(this, getString(R.string.detail_error_full_team), Toast.LENGTH_SHORT)
+                    .show()
+            }
+            is Failure.NoTeamFoundOnFirestoreError -> {
+                Toast.makeText(this, getString(R.string.detail_error_firebase_get), Toast.LENGTH_SHORT)
+                    .show()
+            }
+            is Failure.FirestoreAddError -> {
+                Toast.makeText(this, getString(R.string.detail_error_firebase_add), Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 
@@ -120,19 +129,4 @@ enum class LearnType(val type: String) {
     EGG("egg"),
     TUTOR("tutor"),
     MACHINE("machine"),
-}
-
-fun main() {
-    val map = hashMapOf(
-        Pair(1, "Bulbasaur"),
-        Pair(2, "Charizard"),
-        Pair(3, "Dragonite"),
-        Pair(4, "Gengar")
-    )
-    map[5] = "Mew"
-    map[3] = ""
-    map[2] = "Alakazam"
-    map[5] = "Dratini"
-    map[6] = "Onix"
-    println(map)
 }

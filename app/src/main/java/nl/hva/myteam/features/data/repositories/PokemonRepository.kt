@@ -17,8 +17,10 @@ class PokemonRepository(
     networkHandler: NetworkHandler,
     private val api: Api,
     private val pokemonDao: PokemonDao
-) :
-    BaseRepository(networkHandler) {
+) : BaseRepository(networkHandler) {
+
+    private val db = Firebase.firestore(Firebase.app("MyApp"))
+    private val maxTeamSize = 6
 
     fun getAllPokemon(): PokemonResponse {
         val localPokedex = pokemonDao.getPokedex()
@@ -43,36 +45,85 @@ class PokemonRepository(
         return request(api.getPokemonDetails(name), { it }, PokemonDetails.empty())
     }
 
-    fun storePokemon(pokemon: Pokemon): Long {
-        val team = pokemonDao.getTeam()
-        val maxTeamSize = 6
-        if (team.size >= maxTeamSize) {
+    fun storePokemon(pokemon: Pokemon): Boolean {
+        val onlineTeam = getTeamFromFirestore()
+        pokemonDao.clearTable()
+        for (item in onlineTeam) {
+            pokemonDao.insert(item)
+        }
+        if (onlineTeam.size >= maxTeamSize) {
             throw Failure.FullTeamError()
         } else {
             pokemon.nickname = pokemon.name
-            pokemon.teamSpot = team.size + 1
-            return pokemonDao.insert(pokemon)
+            pokemon.teamSpot = onlineTeam.size + 1
+
+            storePokemonOnFirestore(pokemon)
+            pokemonDao.insert(pokemon)
+            return true
         }
     }
 
-    fun deletePokemon(pokemon: Pokemon) = pokemonDao.delete(pokemon)
+    fun deletePokemon(pokemon: Pokemon): Boolean {
+        val currentTeam = getTeamFromFirestore()
+        val pokemonToReAdd = mutableListOf<Pokemon>()
 
-    fun getTeam(): List<Pokemon> {
-        val localTeam = pokemonDao.getTeam()
-        val onlineTeam = getTeamFromFirestore()
-
-
-        return pokemonDao.getTeam()
+        val pokemonToDelete = pokemon.teamSpot ?: throw Failure.NoTeamSpotError()
+        deletePokemonFromFirestore(pokemonToDelete)
+        for (teamSpot in (pokemonToDelete + 1)..maxTeamSize) {
+            deletePokemonFromFirestore(teamSpot)
+            pokemonToReAdd.add(currentTeam[teamSpot])
+        }
+        for (item in pokemonToReAdd) {
+            item.teamSpot?.let {
+                item.teamSpot = it - 1
+            }
+            storePokemonOnFirestore(item)
+        }
+        pokemonDao.clearTable()
+        val updatedTeam = getTeamFromFirestore()
+        for (item in updatedTeam) {
+            pokemonDao.insert(item)
+        }
+        return true
     }
 
-    fun updatePokemon(pokemon: Pokemon) = pokemonDao.update(pokemon)
+    fun getTeam() = pokemonDao.getTeam()
 
-    private fun getTeamFromFirestore(): List<Pokemon>? {
-        val db = Firebase.firestore(Firebase.app("MyApp"))
+    fun updatePokemon(pokemon: Pokemon): Boolean {
+        storePokemonOnFirestore(pokemon)
+        pokemonDao.update(pokemon)
+        return true
+    }
+
+    fun getTeamFromFirestore(): List<Pokemon> {
         val snapshot = db.collection("team").get()
-        return snapshot.result?.toObjects()
+        val result = snapshot.result ?: throw Failure.NoTeamFoundOnFirestoreError()
+        return result.toObjects()
     }
 
+    private fun storePokemonOnFirestore(pokemon: Pokemon) {
+        db.collection("team")
+            .document("${pokemon.teamSpot}")
+            .set(
+                hashMapOf(
+                    "id" to pokemon.id,
+                    "name" to pokemon.name,
+                    "nickname" to pokemon.nickname,
+                    "url" to pokemon.url
+                )
+            )
+            .addOnFailureListener {
+                throw Failure.FirestoreAddError(it)
+            }
+    }
 
+    private fun deletePokemonFromFirestore(id: Int) {
+        db.collection("team")
+            .document("$id")
+            .delete()
+            .addOnFailureListener {
+                throw Failure.FirestoreDeleteError(it)
+            }
+    }
 
 }

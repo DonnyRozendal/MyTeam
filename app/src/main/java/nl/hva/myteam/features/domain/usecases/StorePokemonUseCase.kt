@@ -5,9 +5,9 @@ import nl.hva.myteam.features.data.models.Pokemon
 import nl.hva.myteam.features.data.repositories.PokemonRepository
 
 class StorePokemonUseCase(private val pokemonRepository: PokemonRepository) :
-    UseCase<Long, StorePokemonUseCase.Params>() {
+    UseCase<Boolean, StorePokemonUseCase.Params>() {
 
-    override fun invoke(params: Params): Long {
+    override fun invoke(params: Params): Boolean {
         return pokemonRepository.storePokemon(params.pokemon)
     }
 

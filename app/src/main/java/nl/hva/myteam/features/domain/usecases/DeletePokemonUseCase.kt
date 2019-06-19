@@ -5,7 +5,7 @@ import nl.hva.myteam.features.data.models.Pokemon
 import nl.hva.myteam.features.data.repositories.PokemonRepository
 
 class DeletePokemonUseCase(private val pokemonRepository: PokemonRepository) :
-    UseCase<Int, DeletePokemonUseCase.Params>() {
+    UseCase<Boolean, DeletePokemonUseCase.Params>() {
 
     override fun invoke(params: Params) = pokemonRepository.deletePokemon(params.pokemon)
 
