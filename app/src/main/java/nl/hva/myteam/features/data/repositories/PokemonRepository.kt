@@ -1,5 +1,9 @@
 package nl.hva.myteam.features.data.repositories
 
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObjects
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
 import nl.hva.myteam.core.exception.Failure
 import nl.hva.myteam.core.platform.BaseRepository
 import nl.hva.myteam.core.platform.NetworkHandler
@@ -46,14 +50,29 @@ class PokemonRepository(
             throw Failure.FullTeamError()
         } else {
             pokemon.nickname = pokemon.name
+            pokemon.teamSpot = team.size + 1
             return pokemonDao.insert(pokemon)
         }
     }
 
     fun deletePokemon(pokemon: Pokemon) = pokemonDao.delete(pokemon)
 
-    fun getTeam() = pokemonDao.getTeam()
+    fun getTeam(): List<Pokemon> {
+        val localTeam = pokemonDao.getTeam()
+        val onlineTeam = getTeamFromFirestore()
+
+
+        return pokemonDao.getTeam()
+    }
 
     fun updatePokemon(pokemon: Pokemon) = pokemonDao.update(pokemon)
+
+    private fun getTeamFromFirestore(): List<Pokemon>? {
+        val db = Firebase.firestore(Firebase.app("MyApp"))
+        val snapshot = db.collection("team").get()
+        return snapshot.result?.toObjects()
+    }
+
+
 
 }

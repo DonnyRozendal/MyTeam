@@ -121,3 +121,18 @@ enum class LearnType(val type: String) {
     TUTOR("tutor"),
     MACHINE("machine"),
 }
+
+fun main() {
+    val map = hashMapOf(
+        Pair(1, "Bulbasaur"),
+        Pair(2, "Charizard"),
+        Pair(3, "Dragonite"),
+        Pair(4, "Gengar")
+    )
+    map[5] = "Mew"
+    map[3] = ""
+    map[2] = "Alakazam"
+    map[5] = "Dratini"
+    map[6] = "Onix"
+    println(map)
+}

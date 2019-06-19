@@ -11,6 +11,7 @@ import kotlinx.android.parcel.Parcelize
 data class Pokemon(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
+    var teamSpot: Int?,
     var nickname: String?,
     @SerializedName("name")
     var name: String,

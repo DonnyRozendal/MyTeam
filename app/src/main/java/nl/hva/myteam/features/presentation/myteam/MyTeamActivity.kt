@@ -55,7 +55,13 @@ class MyTeamActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .setPositiveButton("Confirm") { dialog, _ ->
-                val newPokemon = Pokemon(pokemon.id, view.editText.text.toString().decapitalize(), pokemon.name, pokemon.url)
+                val newPokemon = Pokemon(
+                    pokemon.id,
+                    pokemon.teamSpot,
+                    view.editText.text.toString().decapitalize(),
+                    pokemon.name,
+                    pokemon.url
+                )
                 onPositiveClicked(newPokemon)
                 dialog.dismiss()
             }
