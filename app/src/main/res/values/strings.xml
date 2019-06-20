@@ -6,6 +6,7 @@
     <string name="start_button_pokedex">Pokedex</string>
     <string name="my_team_title">My Team</string>
     <string name="pokedex_title">Pokedex</string>
-    <string name="detail_error">Sorry! Your team already has 6 pokemon…</string>
+    <string name="detail_error_full_team">Sorry! Your team already has 6 pokemon…</string>
     <string name="detail_success">Pokemon added!</string>
+    <string name="detail_error_firebase">Could not connect to Firebase</string>
 </resources>

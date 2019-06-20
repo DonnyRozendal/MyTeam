@@ -98,8 +98,13 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun handleFailure(throwable: Throwable) {
-        if (throwable is Failure.FullTeamError) {
-            Toast.makeText(this, getString(R.string.detail_error), Toast.LENGTH_SHORT).show()
+        when (throwable) {
+            is Failure.FullTeamError -> {
+                Toast.makeText(this, getString(R.string.detail_error_full_team), Toast.LENGTH_SHORT).show()
+            }
+            is Failure.FirebaseError -> {
+                Toast.makeText(this, getString(R.string.detail_error_firebase), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

@@ -6,5 +6,7 @@ class Failure {
     class ServerError(throwable: Throwable) : Throwable(throwable)
     class NetworkConnection : Throwable()
     class FullTeamError : Throwable()
+    class FirebaseError(throwable: Throwable) : Throwable(throwable)
+    class NoTeamSpotError : Throwable()
 
 }

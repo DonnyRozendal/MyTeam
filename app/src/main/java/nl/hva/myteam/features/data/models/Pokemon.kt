@@ -11,6 +11,7 @@ import kotlinx.android.parcel.Parcelize
 data class Pokemon(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
+    var teamSpot: Int?,
     var nickname: String?,
     @SerializedName("name")
     var name: String,
@@ -19,6 +20,8 @@ data class Pokemon(
 ) : Parcelable {
 
     companion object {
+        const val MAX_TEAM_SIZE = 6
+
         fun getEntry(pokemon: Pokemon): String? {
             return Regex("""(?<!v)\d+""").find(pokemon.url)?.value
         }

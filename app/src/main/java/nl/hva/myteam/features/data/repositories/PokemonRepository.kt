@@ -1,6 +1,5 @@
 package nl.hva.myteam.features.data.repositories
 
-import nl.hva.myteam.core.exception.Failure
 import nl.hva.myteam.core.platform.BaseRepository
 import nl.hva.myteam.core.platform.NetworkHandler
 import nl.hva.myteam.features.data.datasource.Api
@@ -13,8 +12,7 @@ class PokemonRepository(
     networkHandler: NetworkHandler,
     private val api: Api,
     private val pokemonDao: PokemonDao
-) :
-    BaseRepository(networkHandler) {
+) : BaseRepository(networkHandler) {
 
     fun getAllPokemon(): PokemonResponse {
         val localPokedex = pokemonDao.getPokedex()
@@ -39,16 +37,7 @@ class PokemonRepository(
         return request(api.getPokemonDetails(name), { it }, PokemonDetails.empty())
     }
 
-    fun storePokemon(pokemon: Pokemon): Long {
-        val team = pokemonDao.getTeam()
-        val maxTeamSize = 6
-        if (team.size >= maxTeamSize) {
-            throw Failure.FullTeamError()
-        } else {
-            pokemon.nickname = pokemon.name
-            return pokemonDao.insert(pokemon)
-        }
-    }
+    fun storePokemon(pokemon: Pokemon) = pokemonDao.insert(pokemon)
 
     fun deletePokemon(pokemon: Pokemon) = pokemonDao.delete(pokemon)
 

@@ -31,6 +31,11 @@ class MyTeamAdapter(
         holder.bind(getItem(position), clickItem, clickDelete)
     }
 
+    override fun submitList(list: List<Pokemon>?) {
+        val comparator = compareBy<Pokemon> { it.teamSpot }
+        super.submitList(list?.sortedWith(comparator))
+    }
+
     class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(pokemon: Pokemon, clickItem: (Pokemon) -> Unit, clickDelete: (Pokemon) -> Unit) =
@@ -66,7 +71,7 @@ class MyTeamAdapter(
         }
 
         override fun areContentsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
-            return oldItem.nickname == newItem.nickname
+            return oldItem == newItem
         }
     }
 
