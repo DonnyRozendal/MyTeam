@@ -1,10 +1,15 @@
 package nl.hva.myteam.features.presentation.detail
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import kotlinx.android.synthetic.main.activity_detail.*
 import nl.hva.myteam.R
 import nl.hva.myteam.core.exception.Failure
@@ -92,6 +97,13 @@ class DetailActivity : AppCompatActivity() {
     private var oldId: Long = 0
     private fun handleStoredPokemon(newId: Long) {
         if (newId != oldId) {
+            createNotificationChannel()
+            val builder = NotificationCompat.Builder(this, "pokemon")
+                .setSmallIcon(R.drawable.ic_pokeball)
+                .setContentTitle("Pokemon added!")
+                .setContentText("Your team size increased, great job!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            NotificationManagerCompat.from(this).notify(0, builder.build())
             Toast.makeText(this, getString(R.string.detail_success), Toast.LENGTH_SHORT).show()
         }
         oldId = newId
@@ -105,6 +117,21 @@ class DetailActivity : AppCompatActivity() {
             is Failure.FirebaseError -> {
                 Toast.makeText(this, getString(R.string.detail_error_firebase), Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("pokemon", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 

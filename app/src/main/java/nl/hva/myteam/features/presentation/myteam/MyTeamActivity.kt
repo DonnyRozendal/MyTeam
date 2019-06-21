@@ -78,6 +78,7 @@ class MyTeamActivity : AppCompatActivity() {
         adapter.submitList(team)
         if (team.isEmpty()) {
             textViewNoTeam.visibility = View.VISIBLE
+            imageViewPikachu.visibility = View.VISIBLE
         }
     }
 

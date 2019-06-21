@@ -9,4 +9,7 @@
     <string name="detail_error_full_team">Sorry! Your team already has 6 pokemon…</string>
     <string name="detail_success">Pokemon added!</string>
     <string name="detail_error_firebase">Could not connect to Firebase</string>
+
+    <string name="channel_name">Adding pokemon</string>
+    <string name="channel_description">Confirmation when adding a pokemon from the pokedex</string>
 </resources>

@@ -20,4 +20,13 @@
         <item name="android:textColor">@color/button_text</item>
     </style>
 
+    <style name="ButtonTablet">
+        <item name="android:layout_width">@dimen/button_tablet_width</item>
+        <item name="android:layout_height">@dimen/button_tablet_height</item>
+        <item name="android:background">@drawable/background_button_tablet</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/button_text</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
 </resources>
